@@ -1,0 +1,29 @@
+# Kino Slack
+
+```elixir
+my_app_root = Path.join(__DIR__, "..")
+
+Mix.install([
+  {:kino_slack, path: my_app_root},
+  {:kino_db, "~> 0.2.0"}
+])
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"fields":{"channel":"testing-kino-slack","message":"mais uma","token":"slack-token"}},"chunks":null,"kind":"Elixir.KinoSlack","livebook_object":"smart_cell"} -->
+
+```elixir
+req = Req.new(base_url: "https://slack.com/api", auth: {:bearer, "slack-token"})
+
+Req.post!(req,
+  url: "/chat.postMessage",
+  json: %{channel: "testing-kino-slack", text: "mais uma"}
+)
+```
+
+<!-- livebook:{"attrs":{"access_key_id":"","database":"","output_location":"","region":"us-east-1","secret_access_key_secret":"","token":"","type":"athena","variable":"conn","workgroup":""},"chunks":null,"kind":"Elixir.KinoDB.ConnectionCell","livebook_object":"smart_cell"} -->
+
+```elixir
+
+```
