@@ -9,7 +9,7 @@ defmodule KinoSlackTest do
     test "returns correct code when all fields are filled" do
       attrs = %{
         "fields" => %{
-          "token" => "xoxb-slack-token",
+          "token_secret_name" => "SLACK_TOKEN",
           "channel" => "slack-channel",
           "message" => "text message"
         }
@@ -17,8 +17,14 @@ defmodule KinoSlackTest do
 
       {_kino, source} = start_smart_cell!(KinoSlack, attrs)
 
+      IO.puts(source)
+
       assert source == """
-             req = Req.new(base_url: "https://slack.com/api", auth: {:bearer, "xoxb-slack-token"})
+             req =
+               Req.new(
+                 base_url: "https://slack.com/api",
+                 auth: {:bearer, System.fetch_env!("LB_SLACK_TOKEN")}
+               )
 
              Req.post!(req,
                url: "/chat.postMessage",
@@ -30,13 +36,13 @@ defmodule KinoSlackTest do
     test "returns empty source code when any of the fields is empty" do
       attrs = %{
         "fields" => %{
-          "token" => "xoxb-slack-token",
+          "token_secret_name" => "SLACK_TOKEN",
           "channel" => "slack-channel",
           "message" => "text message"
         }
       }
 
-      attrs = put_in(attrs["fields"]["token"], "")
+      attrs = put_in(attrs["fields"]["token_secret_name"], "")
       assert KinoSlack.to_source(attrs) == ""
     end
   end

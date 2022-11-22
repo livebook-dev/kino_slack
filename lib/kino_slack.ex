@@ -6,7 +6,7 @@ defmodule KinoSlack do
   @impl true
   def init(attrs, ctx) do
     fields = %{
-      "token" => attrs["fields"]["token"] || "",
+      "token_secret_name" => attrs["fields"]["token_secret_name"] || "",
       "channel" => attrs["fields"]["channel"] || "",
       "message" => attrs["fields"]["message"] || ""
     }
@@ -21,12 +21,6 @@ defmodule KinoSlack do
   end
 
   @impl true
-  def handle_event("update_token", value, ctx) do
-    ctx = update(ctx, :fields, &Map.merge(&1, %{"token" => value}))
-    {:noreply, ctx}
-  end
-
-  @impl true
   def handle_event("update_channel", value, ctx) do
     ctx = update(ctx, :fields, &Map.merge(&1, %{"channel" => value}))
     {:noreply, ctx}
@@ -35,6 +29,13 @@ defmodule KinoSlack do
   @impl true
   def handle_event("update_message", value, ctx) do
     ctx = update(ctx, :fields, &Map.merge(&1, %{"message" => value}))
+    {:noreply, ctx}
+  end
+
+  @impl true
+  def handle_event("update_token_secret_name", value, ctx) do
+    broadcast_event(ctx, "update_token_secret_name", value)
+    ctx = update(ctx, :fields, &Map.merge(&1, %{"token_secret_name" => value}))
     {:noreply, ctx}
   end
 
@@ -54,7 +55,8 @@ defmodule KinoSlack do
         req =
           Req.new(
             base_url: "https://slack.com/api",
-            auth: {:bearer, unquote(attrs["fields"]["token"])}
+            auth:
+              {:bearer, System.fetch_env!(unquote("LB_#{attrs["fields"]["token_secret_name"]}"))}
           )
 
         Req.post!(req,

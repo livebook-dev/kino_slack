@@ -11,19 +11,17 @@ Mix.install([
 
 ## Section
 
-<!-- livebook:{"attrs":{"fields":{"channel":"testing-kino-slack","message":"mais uma","token":"slack-token"}},"chunks":null,"kind":"Elixir.KinoSlack","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":{"fields":{"channel":"testing-kino-slack","message":"agora com secrets de novo","token_secret_name":"SLACK_TOKEN"}},"chunks":null,"kind":"Elixir.KinoSlack","livebook_object":"smart_cell"} -->
 
 ```elixir
-req = Req.new(base_url: "https://slack.com/api", auth: {:bearer, "slack-token"})
+req =
+  Req.new(
+    base_url: "https://slack.com/api",
+    auth: {:bearer, System.fetch_env!("LB_SLACK_TOKEN")}
+  )
 
 Req.post!(req,
   url: "/chat.postMessage",
-  json: %{channel: "testing-kino-slack", text: "mais uma"}
+  json: %{channel: "testing-kino-slack", text: "agora com secrets de novo"}
 )
-```
-
-<!-- livebook:{"attrs":{"access_key_id":"","database":"","output_location":"","region":"us-east-1","secret_access_key_secret":"","token":"","type":"athena","variable":"conn","workgroup":""},"chunks":null,"kind":"Elixir.KinoDB.ConnectionCell","livebook_object":"smart_cell"} -->
-
-```elixir
-
 ```
