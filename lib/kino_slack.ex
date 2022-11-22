@@ -59,13 +59,19 @@ defmodule KinoSlack do
               {:bearer, System.fetch_env!(unquote("LB_#{attrs["fields"]["token_secret_name"]}"))}
           )
 
-        Req.post!(req,
-          url: "/chat.postMessage",
-          json: %{
-            channel: unquote(attrs["fields"]["channel"]),
-            text: unquote(attrs["fields"]["message"])
-          }
-        )
+        response =
+          Req.post!(req,
+            url: "/chat.postMessage",
+            json: %{
+              channel: unquote(attrs["fields"]["channel"]),
+              text: unquote(attrs["fields"]["message"])
+            }
+          )
+
+        case response.body do
+          %{"ok" => true} -> "Message successfully sent"
+          %{"ok" => false, "error" => error} -> "An error happened: #{error}"
+        end
       end
       |> Kino.SmartCell.quoted_to_string()
     end
