@@ -77,7 +77,7 @@ defmodule KinoSlack do
     end
   end
 
-  def any_field_empty?(attrs) do
+  defp any_field_empty?(attrs) do
     keys = Map.keys(attrs["fields"])
     Enum.any?(keys, fn key -> attrs["fields"][key] in [nil, ""] end)
   end
