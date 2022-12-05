@@ -173,5 +173,5 @@ a.icon-button {
   font-size: 1.125em;
 }
 
-// For not showing hidden elements before AlpineJS loads
+/* For not showing hidden elements before AlpineJS loads */
 [x-cloak] { display: none !important; }
