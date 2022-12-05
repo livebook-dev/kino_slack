@@ -5,7 +5,7 @@ defmodule KinoSlack.Application do
 
   @impl true
   def start(_type, _args) do
-    Kino.SmartCell.register(KinoSlack)
+    Kino.SmartCell.register(KinoSlack.MessageCell)
 
     children = []
     opts = [strategy: :one_for_one, name: KinoSlack.Supervisor]

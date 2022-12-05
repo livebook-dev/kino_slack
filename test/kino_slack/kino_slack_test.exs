@@ -1,12 +1,14 @@
-defmodule KinoSlackTest do
+defmodule KinoSlack.MessageCellTest do
   use ExUnit.Case
 
   import Kino.Test
 
+  alias KinoSlack.MessageCell
+
   setup :configure_livebook_bridge
 
   test "when required fields are filled in, generates source code" do
-    {kino, _source} = start_smart_cell!(KinoSlack, %{})
+    {kino, _source} = start_smart_cell!(MessageCell, %{})
 
     push_event(kino, "update_token_secret_name", "SLACK_TOKEN")
     push_event(kino, "update_channel", "#slack-channel")
@@ -57,7 +59,7 @@ defmodule KinoSlackTest do
       }
     }
 
-    {_kino, source} = start_smart_cell!(KinoSlack, stored_attrs)
+    {_kino, source} = start_smart_cell!(MessageCell, stored_attrs)
 
     expected_source = ~S"""
     req =
@@ -93,17 +95,17 @@ defmodule KinoSlackTest do
     }
 
     attrs_missing_required = put_in(required_attrs["fields"]["token_secret_name"], "")
-    assert KinoSlack.to_source(attrs_missing_required) == ""
+    assert MessageCell.to_source(attrs_missing_required) == ""
 
     attrs_missing_required = put_in(required_attrs["fields"]["channel"], "")
-    assert KinoSlack.to_source(attrs_missing_required) == ""
+    assert MessageCell.to_source(attrs_missing_required) == ""
 
     attrs_missing_required = put_in(required_attrs["fields"]["message"], "")
-    assert KinoSlack.to_source(attrs_missing_required) == ""
+    assert MessageCell.to_source(attrs_missing_required) == ""
   end
 
   test "when slack token secret field changes, broadcasts secret name back to client" do
-    {kino, _source} = start_smart_cell!(KinoSlack, %{})
+    {kino, _source} = start_smart_cell!(MessageCell, %{})
 
     push_event(kino, "update_token_secret_name", "SLACK_TOKEN")
 
