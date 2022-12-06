@@ -22,7 +22,7 @@ defmodule KinoSlack.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:kino, "~> 0.7.0"},
+      {:kino, "~> 0.7"},
       {:req, "~> 0.3.2"}
     ]
   end
