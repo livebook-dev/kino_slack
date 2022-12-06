@@ -9,7 +9,7 @@ env:
 
 jobs:
   main:
-    name: Build and test on OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
+    name: Build and test on OTP ${{matrix.pair.otp}} / Elixir ${{matrix.pair.elixir}}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
