@@ -40,8 +40,8 @@ defmodule KinoSlack.MessageCellTest do
       )
 
     case response.body do
-      %{"ok" => true} -> "Message successfully sent"
-      %{"ok" => false, "error" => error} -> "An error happened: #{error}"
+      %{"ok" => true} -> :ok
+      %{"ok" => false, "error" => error} -> {:error, error}
     end
     """
 
@@ -75,8 +75,8 @@ defmodule KinoSlack.MessageCellTest do
       )
 
     case response.body do
-      %{"ok" => true} -> "Message successfully sent"
-      %{"ok" => false, "error" => error} -> "An error happened: #{error}"
+      %{"ok" => true} -> :ok
+      %{"ok" => false, "error" => error} -> {:error, error}
     end
     """
 

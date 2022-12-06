@@ -71,8 +71,8 @@ defmodule KinoSlack.MessageCell do
           )
 
         case response.body do
-          %{"ok" => true} -> "Message successfully sent"
-          %{"ok" => false, "error" => error} -> "An error happened: #{error}"
+          %{"ok" => true} -> :ok
+          %{"ok" => false, "error" => error} -> {:error, error}
         end
       end
       |> Kino.SmartCell.quoted_to_string()
