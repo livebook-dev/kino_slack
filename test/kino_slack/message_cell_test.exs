@@ -48,6 +48,47 @@ defmodule KinoSlack.MessageCellTest do
     assert generated_code == expected_code
   end
 
+  test "generates source code with variable interpolation" do
+    {kino, _source} = start_smart_cell!(MessageCell, %{})
+
+    push_event(kino, "update_token_secret_name", "SLACK_TOKEN")
+    push_event(kino, "update_channel", "#slack-channel")
+    push_event(kino, "update_message", "Hello {{first_name}} {{last_name}}!")
+
+    assert_smart_cell_update(
+      kino,
+      %{
+        "token_secret_name" => "SLACK_TOKEN",
+        "channel" => "#slack-channel",
+        "message" => "Hello {{first_name}} {{last_name}}!"
+      },
+      generated_code
+    )
+
+    expected_code = ~S"""
+    req =
+      Req.new(
+        base_url: "https://slack.com/api",
+        auth: {:bearer, System.fetch_env!("LB_SLACK_TOKEN")}
+      )
+
+    response =
+      Req.post!(req,
+        url: "/chat.postMessage",
+        json: %{channel: "#slack-channel", text: "Hello #{first_name} #{last_name}!"}
+      )
+
+    case response.body do
+      %{"ok" => true} -> :ok
+      %{"ok" => false, "error" => error} -> {:error, error}
+    end
+    """
+
+    expected_code = String.trim(expected_code)
+
+    assert generated_code == expected_code
+  end
+
   test "generates source code from stored attributes" do
     stored_attrs = %{
       "token_secret_name" => "SLACK_TOKEN",
