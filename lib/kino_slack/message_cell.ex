@@ -49,7 +49,7 @@ defmodule KinoSlack.MessageCell do
   @impl true
   def to_source(attrs) do
     required_fields = ~w(token_secret_name channel message)
-    interpolated_message = interpolate(attrs["message"])
+    message_ast = KinoSlack.MessageInterpolator.interpolate(attrs["message"])
 
     if all_fields_filled?(attrs, required_fields) do
       quote do
@@ -64,7 +64,7 @@ defmodule KinoSlack.MessageCell do
             url: "/chat.postMessage",
             json: %{
               channel: unquote(attrs["channel"]),
-              text: unquote(interpolated_message)
+              text: unquote(message_ast)
             }
           )
 
@@ -77,23 +77,6 @@ defmodule KinoSlack.MessageCell do
     else
       ""
     end
-  end
-
-  defp interpolate(message) do
-    ~r/(?<before_interpolation>){{[^}]+}}(?<after_interpolation>)/
-    |> Regex.split(message, on: [:before_interpolation, :after_interpolation])
-    |> Enum.map(fn message_chunk ->
-      case Regex.named_captures(~r/{{(?<var_name>.*)}}/, message_chunk) do
-        %{"var_name" => var_name} ->
-          "\#{#{var_name}}"
-
-        _ ->
-          message_chunk
-      end
-    end)
-    |> Enum.join()
-    |> then(fn message -> "\"" <> message <> "\"" end)
-    |> Code.string_to_quoted!()
   end
 
   defp all_fields_filled?(attrs, keys) do
