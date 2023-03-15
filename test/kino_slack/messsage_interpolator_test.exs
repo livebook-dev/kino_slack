@@ -33,7 +33,7 @@ defmodule KinoSlack.MesssageInterpolatorTest do
     assert interpolated_message == "Do you Hugo, know 2 ?"
   end
 
-  test "it handles messags with only the beginning of interpolation syntax" do
+  test "it handles messages with only the beginning of interpolation syntax" do
     first_name = "Hugo"
     message = "hi {{ {{first_name}}"
 
