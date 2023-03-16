@@ -2,32 +2,32 @@ defmodule KinoSlack.MessageInterpolator do
   @moduledoc false
 
   def interpolate(message) do
-    ast = quote do: <<"">>
-    interpolate(message, ast)
+    args = build_interpolation_args(message, [])
+    {:<<>>, [], args}
   end
 
-  defp interpolate("", result_ast) do
-    result_ast
+  defp build_interpolation_args("", args) do
+    args
   end
 
-  defp interpolate("{{" <> rest, ast) do
+  defp build_interpolation_args("{{" <> rest, args) do
     with [inner, rest] <- String.split(rest, "}}", parts: 2),
          {:ok, expression} <- Code.string_to_quoted(inner) do
-      ast = append_interpolation(ast, expression)
-      interpolate(rest, ast)
+      args = append_interpolation(args, expression)
+      build_interpolation_args(rest, args)
     else
       _ ->
-        ast = append_string(ast, "{{")
-        interpolate(rest, ast)
+        args = append_string(args, "{{")
+        build_interpolation_args(rest, args)
     end
   end
 
-  defp interpolate(<<char::utf8, rest::binary>>, ast) do
-    new_ast = append_string(ast, <<char::utf8>>)
-    interpolate(rest, new_ast)
+  defp build_interpolation_args(<<char::utf8, rest::binary>>, args) do
+    args = append_string(args, <<char::utf8>>)
+    build_interpolation_args(rest, args)
   end
 
-  defp append_interpolation(ast, expression) do
+  defp append_interpolation(args, expression) do
     interpolation_node = {
       :"::",
       [],
@@ -37,24 +37,17 @@ defmodule KinoSlack.MessageInterpolator do
       ]
     }
 
-    {:<<>>, _, args} = ast
-    args = args ++ [interpolation_node]
-
-    {:<<>>, [], args}
+    args ++ [interpolation_node]
   end
 
-  defp append_string(ast, string) do
-    {_, _, args} = ast
+  defp append_string(args, string) do
     last_arg = List.last(args)
 
-    new_args =
-      if is_binary(last_arg) do
-        last_string = last_arg <> string
-        List.replace_at(args, -1, last_string)
-      else
-        args ++ [string]
-      end
-
-    {:<<>>, [], new_args}
+    if is_binary(last_arg) do
+      last_string = last_arg <> string
+      List.replace_at(args, -1, last_string)
+    else
+      args ++ [string]
+    end
   end
 end
