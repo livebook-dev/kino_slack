@@ -1,4 +1,6 @@
 defmodule KinoSlack.MessageInterpolator do
+  @moduledoc false
+
   def interpolate(message) do
     ast = quote do: <<"">>
     interpolate(message, ast)
