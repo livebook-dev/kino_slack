@@ -37,7 +37,7 @@ defmodule KinoSlack.MessageInterpolator do
       ]
     }
 
-    {_, _, args} = ast
+    {:<<>>, _, args} = ast
     args = args ++ [interpolation_node]
 
     {:<<>>, [], args}
