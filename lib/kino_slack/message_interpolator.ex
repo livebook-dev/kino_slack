@@ -15,15 +15,13 @@ defmodule KinoSlack.MessageInterpolator do
       interpolate(rest, ast)
     else
       _ ->
-        <<char::utf8>> = "{"
-        ast = append_char(ast, char)
-        ast = append_char(ast, char)
+        ast = append_string(ast, "{{")
         interpolate(rest, ast)
     end
   end
 
   defp interpolate(<<char::utf8, rest::binary>>, ast) do
-    new_ast = append_char(ast, char)
+    new_ast = append_string(ast, <<char::utf8>>)
     interpolate(rest, new_ast)
   end
 
@@ -43,16 +41,16 @@ defmodule KinoSlack.MessageInterpolator do
     {:<<>>, [], args}
   end
 
-  defp append_char(ast, char) do
+  defp append_string(ast, string) do
     {_, _, args} = ast
     last_arg = List.last(args)
 
     new_args =
       if is_binary(last_arg) do
-        last_string = last_arg <> <<char::utf8>>
+        last_string = last_arg <> string
         List.replace_at(args, -1, last_string)
       else
-        args ++ [<<char::utf8>>]
+        args ++ [string]
       end
 
     {:<<>>, [], new_args}
