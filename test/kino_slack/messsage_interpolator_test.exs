@@ -9,8 +9,10 @@ defmodule KinoSlack.MesssageInterpolatorTest do
     message = "Hi {{first_name}} {{last_name}}! 🎉"
 
     interpolated_ast = Interpolator.interpolate(message)
+    generated_code = Macro.to_string(interpolated_ast)
     {interpolated_message, _} = Code.eval_quoted(interpolated_ast, binding())
 
+    assert generated_code == "\"Hi \#{first_name} \#{last_name}! 🎉\""
     assert interpolated_message == "Hi Hugo Baraúna! 🎉"
   end
 
@@ -18,8 +20,10 @@ defmodule KinoSlack.MesssageInterpolatorTest do
     message = "One plus one is: {{1 + 1}}"
 
     interpolated_ast = Interpolator.interpolate(message)
+    generated_code = Macro.to_string(interpolated_ast)
     {interpolated_message, _} = Code.eval_quoted(interpolated_ast, binding())
 
+    assert generated_code == "\"One plus one is: \#{1 + 1}\""
     assert interpolated_message == "One plus one is: 2"
   end
 
@@ -28,8 +32,10 @@ defmodule KinoSlack.MesssageInterpolatorTest do
     message = "Do you {{first_name}}, know {{1 + 1}} ?"
 
     interpolated_ast = Interpolator.interpolate(message)
+    generated_code = Macro.to_string(interpolated_ast)
     {interpolated_message, _} = Code.eval_quoted(interpolated_ast, binding())
 
+    assert generated_code == "\"Do you \#{first_name}, know \#{1 + 1} ?\""
     assert interpolated_message == "Do you Hugo, know 2 ?"
   end
 
@@ -38,8 +44,10 @@ defmodule KinoSlack.MesssageInterpolatorTest do
     message = "hi {{ {{first_name}}"
 
     interpolated_ast = Interpolator.interpolate(message)
+    generated_code = Macro.to_string(interpolated_ast)
     {interpolated_message, _} = Code.eval_quoted(interpolated_ast, binding())
 
+    assert generated_code == "\"hi {{ \#{first_name}\""
     assert interpolated_message == "hi {{ Hugo"
   end
 end
