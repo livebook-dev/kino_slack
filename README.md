@@ -6,6 +6,8 @@
 Slack integration with [Kino](https://github.com/livebook-dev/kino)
 for [Livebook](https://github.com/livebook-dev/livebook).
 
+![](.github/images/kino-slack-screenshot.png)
+
 ## Installation
 
 To bring KinoSlack to Livebook all you need to do is `Mix.install/2`:
@@ -18,7 +20,7 @@ Mix.install([
 
 ## License
 
-Copyright (C) 2022 Dashbit
+Copyright (C) 2023 Dashbit
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
