@@ -2,7 +2,7 @@
 
 ```elixir
 Mix.install([
-  {:kino_slack, "~> 0.2.0"},
+  {:kino_slack, "~> 0.1.1"},
   {:req, "~> 0.3.0"}
 ])
 ```
