@@ -49,6 +49,7 @@ defmodule KinoSlack.MessageCell do
   @impl true
   def to_source(attrs) do
     required_fields = ~w(token_secret_name channel message)
+    message_ast = KinoSlack.MessageInterpolator.interpolate(attrs["message"])
 
     if all_fields_filled?(attrs, required_fields) do
       quote do
@@ -63,7 +64,7 @@ defmodule KinoSlack.MessageCell do
             url: "/chat.postMessage",
             json: %{
               channel: unquote(attrs["channel"]),
-              text: unquote(attrs["message"])
+              text: unquote(message_ast)
             }
           )
 
@@ -78,7 +79,7 @@ defmodule KinoSlack.MessageCell do
     end
   end
 
-  def all_fields_filled?(attrs, keys) do
+  defp all_fields_filled?(attrs, keys) do
     Enum.all?(keys, fn key -> attrs[key] not in [nil, ""] end)
   end
 end
