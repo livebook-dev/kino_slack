@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v0.1.1](https://github.com/livebook-dev/kino_slack/tree/v0.1.1) (2023-03-17)
 
-### Addded
+### Added
 
 * Messages with interpolation ([#4](https://github.com/livebook-dev/kino_slack/pull/4))
 
